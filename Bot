@@ -1,0 +1,64 @@
+import requests
+import json
+from selenium import webdriver
+import time
+
+
+class AutoCheckout:
+
+    def init(self):
+        self.product_url = ''
+
+    def availability_check(self):
+        #r = requests.get('https://kith.com/collections/mens-footwear.json)
+        r = requests.get('https://kith.com/collections/mens-footwear.json')
+        products = json.loads(r.text)['products']
+
+        for product in products:
+            product_name = product['title']
+
+            if product_name == 'Analog adidas yeezy 700 V1':
+
+                self.product_url = 'https://kith.com/collections/mens-footwear' + product['handle']
+
+                return self.product_url
+
+            return False
+
+    def checkout(self):
+        driver = webdriver.Chrome(executable_path=r'C:\webdrivers\chromedriver.exe')
+        driver.get(self.product_url)
+        # Size
+        driver.find_element_by_xpath('//div[@value="M 10 / W 11.5"]')
+        # Added
+        driver.find_element_by_xpath('//button[@name="add"]').click()
+        # Checkout
+        driver.find_element_by_xpath('//button[@name="checkout"]').click()
+        # Email
+        driver.find_element_by_xpath('//input[@placeholder="Email"]').send_keys('mymail@gmail.com')
+        time.sleep(0.5)
+        # First Name
+        driver.find_element_by_xpath('//input[@placeholder="First name"]').send_keys('Shalin')
+        time.sleep(0.5)
+        # Last Name
+        driver.find_element_by_xpath('//input[@placeholder="Last name"]').send_keys('Garasia')
+        time.sleep(0.5)
+        # City
+        driver.find_element_by_xpath('//input[@placeholder="City"]').send_keys('Galloway')
+        time.sleep(0.5)
+        # Zip code
+        driver.find_element_by_xpath('//input[@id="checkout_shipping_address_zip"]').send_keys('08205')
+        time.sleep(0.5)
+        # Phone and Enter
+        driver.find_element_by_xpath('//input[@data-backup="phone"]').send_keys('6098331746' + u'\ue007')
+def buy_product(self):
+        availability = self.availability_check()
+        if availability:
+            self.checkout()
+        else:
+            print('Product not available')
+
+
+#auto_checkout = AutoCheckout()
+
+#auto_checkout.buy_product()
